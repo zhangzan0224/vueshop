@@ -1,32 +1,23 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <Header />
+    <!-- 路由组件出口的地方 -->
+    <router-view></router-view>
+    <!-- 在Home与Search可见的，但是Login|Register不可见 -->
+    <!-- 利用路由元信息解决当前问题好处：一行代码就可以解决 -->
+    <Footer v-show="!$route.meta.isHideFooter" />
   </div>
 </template>
-
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+// 引入Header与Footer非路由组件
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  components: {
+    Header,
+    Footer
   }
 }
-</style>
+</script>
+
+<style lang="less"></style>
