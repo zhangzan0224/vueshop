@@ -64,6 +64,12 @@ const routes = [
     meta: {
       isHideFooter: true
     }
+  },
+  {
+    // 当有占位符的时候,需最少有一个参数,也可以加个?可传可不传,要不跳转的路径存在异常
+    path: '/search/:keyword?',
+    name: 'Search',
+    component: () => import(/* webpackChunkName: "home" */ '../views/Search')
   }
 ]
 

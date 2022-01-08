@@ -39,7 +39,7 @@
         </router-link>
       </h1>
       <div class="searchArea">
-        <form action="###" class="searchForm">
+        <form class="searchForm">
           <input
             type="text"
             id="autocomplete"
@@ -70,7 +70,18 @@ export default {
   },
   methods: {
     logout () {},
-    goSearch () {}
+    goSearch () {
+      // 如果跳转的时候是空字符串,跳转的路径存在问题,需要判断或者在后面加上undefined
+      // 合并参数,params和query
+      const toAddress = {
+        name: 'Search',
+        params: { keyword: this.keyword || undefined }
+      }
+      if (this.$route.query) {
+        toAddress.query = this.$route.query
+      }
+      this.$router.push(toAddress)
+    }
   },
   mounted () {},
   computed: {}

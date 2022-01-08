@@ -3,56 +3,62 @@
   <div class="type-nav">
     <div class="container">
       <!-- 事件委托和事件代理 -->
-      <div @mouseleave="resetCurrent()">
+      <div @mouseleave="resetCurrent()" @mouseenter="enterShow">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
-          <div class="all-sort-list2" @click="goSearch">
-            <div
-              class="item"
-              v-for="(c1, index) in categoryList"
-              :key="c1.categoryId"
-              @mouseenter="changeCurrentIndex(index)"
-              :class="{ cur: currentIndex === index }"
-            >
-              <h3>
-                <a
-                  :data-categoryName="c1.categoryName"
-                  :data-category1Id="c1.categoryId"
-                  >{{ c1.categoryName }}</a
-                >
-              </h3>
+        <!-- 判断二三级菜单是否需要展示 -->
+        <transition name="sort">
+          <div class="sort" v-show="isShow">
+            <div class="all-sort-list2" @click="goSearch">
               <div
-                class="item-list clearfix"
-                :style="{ display: currentIndex === index ? 'block' : 'none' }"
+                class="item"
+                v-for="(c1, index) in categoryList"
+                :key="c1.categoryId"
+                @mouseenter="changeCurrentIndex(index)"
+                :class="{ cur: currentIndex === index }"
               >
-                <div class="subitem">
-                  <dl
-                    class="fore"
-                    v-for="c2 in c1.categoryChild"
-                    :key="c2.categoryId"
+                <h3>
+                  <a
+                    :data-categoryName="c1.categoryName"
+                    :data-category1Id="c1.categoryId"
+                    >{{ c1.categoryName }}</a
                   >
-                    <dt>
-                      <a
-                        :data-categoryName="c2.categoryName"
-                        :data-category2Id="c2.categoryId"
-                        >{{ c2.categoryName }}</a
-                      >
-                    </dt>
-                    <dd>
-                      <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                </h3>
+                <!-- 二三级菜单 -->
+                <div
+                  class="item-list clearfix"
+                  :style="{
+                    display: currentIndex === index ? 'block' : 'none'
+                  }"
+                >
+                  <div class="subitem">
+                    <dl
+                      class="fore"
+                      v-for="c2 in c1.categoryChild"
+                      :key="c2.categoryId"
+                    >
+                      <dt>
                         <a
-                          :data-categoryName="c3.categoryName"
-                          :data-category3Id="c3.categoryId"
-                          >{{ c3.categoryName }}</a
+                          :data-categoryName="c2.categoryName"
+                          :data-category2Id="c2.categoryId"
+                          >{{ c2.categoryName }}</a
                         >
-                      </em>
-                    </dd>
-                  </dl>
+                      </dt>
+                      <dd>
+                        <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                          <a
+                            :data-categoryName="c3.categoryName"
+                            :data-category3Id="c3.categoryId"
+                            >{{ c3.categoryName }}</a
+                          >
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
 
       <nav class="nav">
@@ -74,12 +80,12 @@ import { mapState } from 'vuex'
 // 引入lodash:是把lodash全部封装好的函数全都引入进来了
 // 按需引入：只是引入节流函数，其他的函数没有引入（模块），这样做的好处是，当你打包项目的时候体积会小一些
 import throttle from 'lodash/throttle'
-import { query } from 'express'
 export default {
   name: 'TypeNav',
   data () {
     return {
-      currentIndex: -1
+      currentIndex: -1,
+      isShow: true
     }
   },
   computed: {
@@ -90,6 +96,9 @@ export default {
       this.currentIndex = index
     }, 100),
     resetCurrent () {
+      if (this.$route.path !== '/home') {
+        this.isShow = false
+      }
       this.currentIndex = -1
     },
     goSearch (event) {
@@ -98,27 +107,36 @@ export default {
       // console.log(element.dataset)
       const { categoryname, category1id, category2id, category3id } =
         element.dataset
-
       if (categoryname) {
+        const toAddress = { name: 'Search' }
         // 制作push的参数对象
-        const location = { name: 'search' }
-        const query = { categoryName: categoryname }
+        // Object.defineProperty(toAddress, 'name', { value: 'Search' })
+        const queryObj = { categoryName: categoryname }
         if (category1id) {
-          query.category1Id = category1id
+          queryObj.category1Id = category1id
         } else if (category2id) {
-          query.category2Id = category2id
+          queryObj.category2Id = category2id
         } else {
-          query.category3Id = category3id
+          queryObj.category3Id = category3id
         }
-      }
-      // 判断：如果路由跳转的时候，带有params参数，捎带脚传递过去
-      if (this.$route.params) {
-        location.params = this.$route.params
-        // 动态给location配置对象添加query属性
-        location.query = query
+        toAddress.query = queryObj
+        // 判断：如果路由跳转的时候，带有params参数，捎带脚传递过去
+        if (this.$route.params) {
+          toAddress.params = this.$route.params
+        }
         // 路由跳转
-        this.$router.push(location)
+        this.$router.push(toAddress)
       }
+    },
+    enterShow () {
+      this.isShow = true
+    }
+  },
+  mounted () {
+    // 当组件挂载完毕，让show属性变为false
+    // 如果不是Home路由组件，将typeNav进行隐藏
+    if (this.$route.path !== '/home') {
+      this.isShow = false
     }
   }
 }
@@ -239,6 +257,22 @@ export default {
           background: skyblue;
         }
       }
+    }
+    //过渡动画的样式
+    //过渡动画开始状态（进入）
+    .sort-enter,
+    .sort-leave-to {
+      height: 0px;
+    }
+    // 过渡动画结束状态（进入）
+    .sort-enter-to,
+    .sort-leave {
+      height: 461px;
+    }
+    // 定义动画时间、速率
+    .sort-enter-active,
+    .sort-leave-active {
+      transition: all 0.5s linear;
     }
   }
 }

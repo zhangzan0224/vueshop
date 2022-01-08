@@ -3,6 +3,10 @@ module.exports = {
   env: {
     node: true
   },
+  parserOptions: {
+    ecmaVersion: 7,
+    sourceType: 'module'
+  },
   extends: ['plugin:vue/essential', '@vue/standard'],
   parserOptions: {
     parser: 'babel-eslint'
@@ -10,6 +14,6 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-unused-vars': 0
+    'no-unused-vars': 'off'
   }
 }

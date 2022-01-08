@@ -9,8 +9,8 @@ import 'nprogress/nprogress.css'
 
 // 创建axios的实例
 const requests = axios.create({
-  // 基础路径
-  baseURL: '/api',
+  // !基础路径 mock模拟的接口
+  baseURL: '/mock',
   // 请求不能超过5S
   timeout: 5000
 })

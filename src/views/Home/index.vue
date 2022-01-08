@@ -10,15 +10,14 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
-    <!--楼层-->
-    <Floor />
+    <Floor v-for="floor in floorList" :key="floor.id" :floor="floor" />
     <!--商标-->
     <Brand />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Brand from './Brand/Brand'
 import Floor from './Floor/Floor'
 import Like from './Like/Like'
@@ -36,7 +35,13 @@ export default {
     TodayRecommend
   },
   mounted () {
-    this.$store.dispatch('getBaseCategoryList')
+    // 通知vuex去后台获取floorList,不能在floor内部去发,因为模拟数据是两条数据,两层的数据
+    this.$store.dispatch('getFloorData')
+  },
+  computed: {
+    ...mapState({
+      floorList: (state) => state.home.floorList
+    })
   }
 }
 </script>
