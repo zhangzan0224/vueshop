@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TypeNav />
+    <typeNav />
     <!--列表-->
     <ListContainer />
     <!--今日推荐-->
