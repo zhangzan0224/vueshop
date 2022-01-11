@@ -18,3 +18,17 @@ export const reqgetBaseCategoryList = () =>
 export const reqGetBannerList = () => mockRequests.get('/banner')
 
 export const reqGetFloorData = () => mockRequests.get('/floor')
+
+// 获取注册的验证码
+// api/user/passport/sendCode/{phone}
+export const reqGetCode = (phone) =>
+  requests('/user/passport/sendCode/' + phone)
+// 注册的接口
+// api/user/passport/register
+
+export const reqUserRegister = (data) =>
+  requests({
+    url: '/user/passport/register',
+    method: 'post',
+    data
+  })
