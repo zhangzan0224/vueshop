@@ -32,3 +32,26 @@ export const reqUserRegister = (data) =>
     method: 'post',
     data
   })
+// /api/user/passport/login
+// 登录的接口
+export const reqUserLogin = (data) =>
+  requests({
+    url: '/user/passport/login',
+    method: 'post',
+    data
+  })
+
+// 添加了token校验获取用户登录信息，用户登录只保存用户的token
+// /api/user/passport/auth/getUserInfo
+export const reqUserInfo = () =>
+  requests({
+    url: '/user/passport/auth/getUserInfo',
+    methond: 'get'
+  })
+
+// 退出登录 /api/user/passport/logout
+
+export const reqLogout = () =>
+  requests({
+    url: '/user/passport/logout'
+  })

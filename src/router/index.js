@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+// 引入store
+import store from '@/store'
 Vue.use(VueRouter)
 
 // 需要重写VueRouter.prototype原型对象身上的push|replace方法
@@ -42,6 +43,10 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 
 const routes = [
   {
+    path: '/',
+    redirect: '/home'
+  },
+  {
     path: '/home',
     name: 'About',
     // route level code-splitting
@@ -52,7 +57,8 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Register'),
+    component: () =>
+      import(/* webpackChunkName: "login&register" */ '../views/Register'),
     meta: {
       isHideFooter: true
     }
@@ -60,7 +66,8 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Login'),
+    component: () =>
+      import(/* webpackChunkName: "login&register" */ '../views/Login'),
     meta: {
       isHideFooter: true
     }
@@ -69,12 +76,50 @@ const routes = [
     // 当有占位符的时候,需最少有一个参数,也可以加个?可传可不传,要不跳转的路径存在异常
     path: '/search/:keyword?',
     name: 'Search',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Search')
+    component: () => import(/* webpackChunkName: "search" */ '../views/Search')
   }
 ]
 
 const router = new VueRouter({
   routes
 })
-
+// 路由全局前置守卫
+router.beforeEach(async (to, from, next) => {
+  // 如果用户登录过,有token,那就不能再去login页面了
+  // 有token说明登录了
+  const token = store.state.user.token
+  //  空对象也是真,得通过里面的属性是否存在值
+  // Bollean({}) === true
+  const userName = store.state.user.userinfo.name
+  if (token) {
+    // 用户已经登录还想再去login,休想,停留在首页
+    if (to.path === '/login') {
+      next('/home')
+    } else {
+      // 登录了,但去的不是login,可能去的是(home|search)
+      // 有用户名信息,放行,要不一刷新就没有了用户信息
+      if (userName) {
+        next()
+      } else {
+        // 没有用户信息,派发action让仓库存储用户信息再去跳转,有用户信息,再去跳转
+        try {
+          const result = await store.dispatch('getUserInfo')
+          if (result === 'ok') {
+            next()
+          }
+        } catch (error) {
+          // token失效了,得清空信息
+          // 清除所有的信息,跳转到登录界面
+          const result = await store.dispatch('userLogout')
+          if (result === 'ok') {
+            next('/login')
+          }
+        }
+      }
+    }
+  } else {
+    // 未登录 先放行
+    next()
+  }
+})
 export default router

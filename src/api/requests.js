@@ -1,5 +1,7 @@
 // 导入axios
 import axios from 'axios'
+// 导入store
+import store from '@/store'
 // 导入nprogress
 import nprogress from 'nprogress'
 // 如果出现进度条没有显示：一定是你忘记了引入样式了
@@ -18,6 +20,10 @@ const requests = axios.create({
 // axios设置请求拦截器,设置响应头token
 requests.interceptors.request.use(
   (config) => {
+    // 判断需要携带token带给服务器
+    if (store.state.user.token) {
+      config.headers.token = store.state.user.token
+    }
     nprogress.start()
     return config
   },

@@ -103,14 +103,19 @@ export default {
       // 只要有一个表单没有成功，不会发请求
       if (success) {
         try {
-          const { phone, code, password, password1 } = this
-          await this.$store.dispatch('userRegister', {
+          const { phone, code, password } = this
+
+          const result = await this.$store.dispatch('userRegister', {
             phone,
             code,
             password
           })
-          // 注册成功进行路由的跳转
-          this.$router.push('/login')
+          if (result === 'ok') {
+            // 注册成功进行路由的跳转
+            this.$router.push('/login')
+          } else {
+            return false
+          }
         } catch (error) {
           alert(error.message)
         }

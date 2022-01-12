@@ -37,6 +37,8 @@ export default {
   mounted () {
     // 通知vuex去后台获取floorList,不能在floor内部去发,因为模拟数据是两条数据,两层的数据
     this.$store.dispatch('getFloorData')
+    // !放在路由里去获取用户的信息,要不从主页切换到其他的页面,一刷新就没有了用户信息
+    // this.$store.dispatch('getUserInfo')
   },
   computed: {
     ...mapState({

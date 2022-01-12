@@ -14,14 +14,22 @@
           </ul>
 
           <div class="content">
-            <form action="##">
+            <form>
               <div class="input-text clearFix">
                 <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号" />
+                <input
+                  type="text"
+                  placeholder="邮箱/用户名/手机号"
+                  v-model="phone"
+                />
               </div>
               <div class="input-text clearFix">
                 <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码" />
+                <input
+                  type="text"
+                  placeholder="请输入密码"
+                  v-model="password"
+                />
               </div>
               <div class="setting clearFix">
                 <label class="checkbox inline">
@@ -30,7 +38,10 @@
                 </label>
                 <span class="forget">忘记密码？</span>
               </div>
-              <button class="btn">登&nbsp;&nbsp;录</button>
+              <!-- !!添加一个prevent阻止表单的默认事件 -->
+              <button class="btn" @click.prevent="userLogin">
+                登&nbsp;&nbsp;录
+              </button>
             </form>
 
             <div class="call clearFix">
@@ -68,7 +79,36 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data () {
+    return {
+      phone: '',
+      password: ''
+    }
+  },
+  methods: {
+    // 用户登录
+    async userLogin () {
+      const { phone, password } = this
+      try {
+        // 简单进行判断
+        if (phone && password) {
+          const result = await this.$store.dispatch('userLogin', {
+            phone,
+            password
+          })
+          // console.log('@@', result)
+          if (result === 'ok') {
+            this.$router.push('/home')
+          } else return false
+        } else {
+          return false
+        }
+      } catch (error) {
+        alert(error.message)
+      }
+    }
+  }
 }
 </script>
 
