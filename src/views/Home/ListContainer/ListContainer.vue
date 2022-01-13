@@ -93,29 +93,6 @@ export default {
       bannerList: (state) => state.home.bannerList,
       floorList: (state) => state.home.floorList
     })
-  },
-  watch: {
-    bannerList: {
-      immediate: true,
-      handler () {
-        this.$nextTick(() => {
-          var mySwiper = new Swiper(this.$refs.mySwiper, {
-            loop: true,
-            // 如果需要分页器
-            pagination: {
-              el: '.swiper-pagination',
-              // 点击小球的时候也切换图片
-              clickable: true
-            },
-            // 如果需要前进后退按钮
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev'
-            }
-          })
-        })
-      }
-    }
   }
 }
 </script>

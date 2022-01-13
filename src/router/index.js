@@ -10,7 +10,7 @@ const originPush = VueRouter.prototype.push
 const originReplace = VueRouter.prototype.replace
 // 重写VueRouter.prototype身上的push方法了
 VueRouter.prototype.push = function (location, resolve, reject) {
-  // 第一个形参：路由跳转的配置对象（query|params）
+  // 第一个形参：路由跳转的配置对象（query|params））
   // 第二个参数：undefined|箭头函数（成功的回调）
   // 第三个参数:undefined|箭头函数（失败的回调）
   if (resolve && reject) {

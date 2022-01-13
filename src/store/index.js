@@ -5,6 +5,8 @@ import Vuex from 'vuex'
 import home from './home'
 // 导入user的store
 import user from './user'
+// 导入search的store
+import search from './search'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -13,6 +15,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     home,
-    user
+    user,
+    search
   }
 })
