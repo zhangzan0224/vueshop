@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 // 引入store
 import store from '@/store'
 Vue.use(VueRouter)
-
 // 需要重写VueRouter.prototype原型对象身上的push|replace方法
 // 先把VueRouter.prototype身上的push|replace方法进行保存一份
 const originPush = VueRouter.prototype.push

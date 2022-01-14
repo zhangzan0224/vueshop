@@ -76,3 +76,15 @@ export const reqGetSearchList = (data) =>
     data,
     method: 'post'
   })
+
+// /api/cart/cartList 购物车
+export const reqCartList = () =>
+  requests({
+    url: '/cart/cartList'
+  })
+
+// 测试 /api/order/auth/trade
+export const reqGetTrade = () =>
+  requests({
+    url: '/order/auth/trade'
+  })

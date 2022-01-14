@@ -46,7 +46,7 @@ const actions = {
   async userRegister ({ commit }, data) {
     // console.log(data)
     const result = await reqUserRegister(data)
-    // console.log(result)
+    // console.log('@@@@', result)
     if (result.code === 200) {
       return 'ok'
     } else {

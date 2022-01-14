@@ -17,7 +17,7 @@ export default {
     Header,
     Footer
   },
-  mounted () {
+  async mounted () {
     // 三级菜单可以放在app中,要不当typenav去挂载的时候每次都发送一次请求
     this.$store.dispatch('getBaseCategoryList')
   }
