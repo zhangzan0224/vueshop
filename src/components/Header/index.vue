@@ -90,7 +90,12 @@ export default {
       this.$router.push(toAddress)
     }
   },
-  mounted () {},
+  mounted () {
+    // 绑定clear事件
+    this.$bus.$on('clear', (_) => {
+      this.keyword = ''
+    })
+  },
   computed: {
     userName () {
       return this.$store.state.user.userinfo.loginName

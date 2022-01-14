@@ -11,15 +11,21 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
+            <!-- 分类的面包屑 -->
             <li class="with-x" v-if="searchParams.categoryName">
               {{ searchParams.categoryName
               }}<i @click="removecategoryName">x</i>
+              <!-- 关键字的面包屑 -->
+            </li>
+
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyword">x</i>
             </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -180,10 +186,31 @@ export default {
       if (this.$route.params) {
         this.$router.push({ name: 'Search', params: this.$route.params })
       }
+    },
+    // 移除关键字面包屑事件
+    removeKeyword () {
+      // 给服务器带的数据进行清理
+      this.searchParams.keyword = undefined
+      // 通知header组件清空key的值
+      this.$bus.$emit('clear')
+      // 重新获取数据
+      this.getData()
+      // 进行路由的跳转
+      if (this.$route.query) {
+        this.$router.push({ name: 'Search', query: this.$route.query })
+      }
+    },
+    // 从子组件传值
+    trademarkInfo (trademark) {
+      // console.log(trademark)
+      // 整理品牌数据
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`
+      this.getData()
     }
   },
   // 只能执行一次
   mounted () {
+    // console.log(this.$route)
     this.getData()
   },
   computed: {
