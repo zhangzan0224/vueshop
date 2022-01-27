@@ -80,8 +80,6 @@
 
 <script>
 import { mapState } from 'vuex'
-// 引入swiper
-import Swiper from 'swiper'
 export default {
   name: 'ListContainer',
   mounted () {
