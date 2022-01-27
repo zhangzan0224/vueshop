@@ -15,11 +15,15 @@
             <li class="with-x" v-if="searchParams.categoryName">
               {{ searchParams.categoryName
               }}<i @click="removecategoryName">x</i>
-              <!-- 关键字的面包屑 -->
             </li>
-
+            <!-- 关键字的面包屑 -->
             <li class="with-x" v-if="searchParams.keyword">
               {{ searchParams.keyword }}<i @click="removeKeyword">x</i>
+            </li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(':')[1]
+              }}<i @click="removeTrademark">x</i>
             </li>
           </ul>
         </div>
@@ -171,11 +175,12 @@ export default {
     getData () {
       this.$store.dispatch('getSearchList', this.searchParams)
     },
-    //  移除面包屑的事件
+    //  移除分类面包屑的事件
     removecategoryName () {
       // 把带给服务器的参数置空了，还需要向服务器发请求
       // 带给服务器参数说明可有可无的：如果属性值为空的字符串还是会把相应的字段带给服务器
-      // 但是你把相应的字段变为undefined，当前这个字段不会带给服务器
+      // !但是你把相应的字段变为undefined，当前这个字段不会带给服务器
+      // !删除分类名字,必须得把id也清空
       this.searchParams.categoryName = undefined
       this.searchParams.category1Id = undefined
       this.searchParams.category2Id = undefined
@@ -200,11 +205,17 @@ export default {
         this.$router.push({ name: 'Search', query: this.$route.query })
       }
     },
-    // 从子组件传值
+    // ! 从子组件中将品牌信息传递过来
     trademarkInfo (trademark) {
+      // 从子组件传值
       // console.log(trademark)
       // 整理品牌数据
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`
+      this.getData()
+    },
+    // 移除品牌事件
+    removeTrademark () {
+      this.searchParams.trademark = undefined
       this.getData()
     }
   },
@@ -224,8 +235,10 @@ export default {
       // 再次发请求之前整理带给服务器参数
       Object.assign(this.searchParams, this.$route.query, this.$route.params)
       // 再次发起ajax请求
+      console.log(this.searchParams)
       this.getData()
-      // 分类名字与关键字不用清理：因为每一次路由发生变化的时候，都会给他赋予新的数据
+      // 分类名字与关键字不用清理：因为每一次路由发生变化的时候，都会给他赋予新的数据,
+      //! 路由如果刚开始点击一二级的菜单,需要进行重置,要不会把1 2 级的菜单id带过去,每次请求结束后,需要重置一下
       this.searchParams.category1Id = undefined
       this.searchParams.category2Id = undefined
       this.searchParams.category3Id = undefined
