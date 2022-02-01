@@ -18,6 +18,7 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 平台的售卖属性 -->
     <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
@@ -26,7 +27,7 @@
           v-for="attrValue in attr.attrValueList"
           :key="attrValue"
         >
-          <li>
+          <li @click="attrInfo(attr, attrValue)">
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -47,6 +48,9 @@ export default {
   methods: {
     trademarkHandle (trademark) {
       this.$emit('trademarkInfo', trademark)
+    },
+    attrInfo (attr, attrValue) {
+      this.$emit('attrInfo', attr, attrValue)
     }
   }
 }

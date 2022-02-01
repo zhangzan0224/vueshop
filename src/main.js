@@ -9,6 +9,7 @@ import store from './store'
 // 定义全局组件：在入口文件注册一次之后，在任何组件当中都可以使用
 import typeNav from '@/components/TypeNav'
 import Carousel from '@/components/Carousel'
+import Pagination from '@/components/Pagination'
 // 导入mock的服务器接口
 // 只是执行这个js文件,不需要使用其中的函数等等
 import '@/mock/mockServer'
@@ -17,7 +18,7 @@ import 'swiper/css/swiper.css'
 // 全局组件：第一个参数 组件名字  第二个参数：那个组件
 Vue.component(typeNav.name, typeNav)
 Vue.component(Carousel.name, Carousel)
-
+Vue.component(Pagination.name, Pagination)
 Vue.config.productionTip = false
 new Vue({
   router,

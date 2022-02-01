@@ -25,34 +25,47 @@
               {{ searchParams.trademark.split(':')[1]
               }}<i @click="removeTrademark">x</i>
             </li>
+            <!-- 平台的售卖属性 -->
+            <li
+              class="with-x"
+              v-for="(attrValue, index) in searchParams.props"
+              :key="index"
+            >
+              {{ attrValue.split(':')[1]
+              }}<i @click="removeAttrValue(index)">x</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo" />
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }" @click="changeOrder('1')">
+                  <a>
+                    综合
+                    <span
+                      v-show="isOne"
+                      class="iconfont"
+                      :class="{ 'icon-DOWN': isDesc, 'icon-UP': isAsc }"
+                    >
+                    </span>
+                  </a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isTwo }" @click="changeOrder('2')">
+                  <a>
+                    价格
+                    <span
+                      v-show="isTwo"
+                      class="iconfont"
+                      :class="{ 'icon-DOWN': isDesc, 'icon-UP': isAsc }"
+                    >
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -97,35 +110,13 @@
             </ul>
           </div>
           <!-- 分页的位置 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination
+            :pageNo="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :continues="5"
+            :total="total"
+            @getPageNo="getPageNo"
+          ></Pagination>
         </div>
       </div>
     </div>
@@ -134,7 +125,7 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Search',
   data () {
@@ -169,7 +160,7 @@ export default {
     // !在发请求之前，把接口需要传递参数，进行整理（在给服务器发请求之前，把参数整理好，服务器就会返回查询的数据）
     // assign可以把对象合并
     Object.assign(this.searchParams, this.$route.params, this.$route.query)
-    console.log('发送数据之前', this.searchParams)
+    // console.log('发送数据之前', this.searchParams)
   },
   methods: {
     getData () {
@@ -217,6 +208,47 @@ export default {
     removeTrademark () {
       this.searchParams.trademark = undefined
       this.getData()
+    },
+    // 移除售卖属性
+    removeAttrValue (index) {
+      // 移除售卖属性之后再次发送请求
+      this.searchParams.props.splice(index, 1)
+      this.getData()
+    },
+    // 售卖属性的回调函数,从子组件取值
+    attrInfo (attr, attrValue) {
+      // 商品属性的数组: ["属性ID:属性值:属性名"]示例: ["2:6.0～6.24英寸:屏幕尺寸"]
+      const props = `${attr.attrId}:${attrValue}:${attr.attrName}`
+      // console.log(props)
+      // 需判断这个元素有没有之前的元素 if语句只有一行代码可以省略花括号
+      if (this.searchParams.props.indexOf(props) === -1) {
+        this.searchParams.props.push(props)
+      }
+      // 再次发送请求
+      this.getData()
+    },
+
+    // 排序
+    changeOrder (flag) {
+      const originFlag = this.searchParams.order.split(':')[0]
+      const originType = this.searchParams.order.split(':')[1]
+      let newOrder = ''
+      // 初始和总和的相等
+      if (flag == originFlag) {
+        newOrder = `${originFlag}:${originType == 'desc' ? 'asc' : 'desc'}`
+      } else {
+        newOrder = `${flag}:${'desc'}`
+      }
+      this.searchParams.order = newOrder
+      this.getData()
+    },
+
+    // 丛子组件中获取页码
+    getPageNo (pageNo) {
+      // console.log(pageNo)
+      this.searchParams.pageNo = pageNo
+      // 重新获取数据
+      this.getData()
     }
   },
   // 只能执行一次
@@ -225,7 +257,23 @@ export default {
     this.getData()
   },
   computed: {
-    ...mapGetters(['attrsList', 'goodsList'])
+    ...mapGetters(['attrsList', 'goodsList']),
+    isOne () {
+      return this.searchParams.order.indexOf('1') !== -1
+    },
+    isTwo () {
+      return this.searchParams.order.indexOf('2') != -1
+    },
+    isAsc () {
+      return this.searchParams.order.indexOf('asc') != -1
+    },
+    isDesc () {
+      return this.searchParams.order.indexOf('desc') != -1
+    },
+    // 获取search模块展示产品一共多少数据
+    ...mapState({
+      total: (state) => state.search.listData.total
+    })
   },
   // 数据监听：监听组件实例身上的属性的属性值变化
   watch: {
