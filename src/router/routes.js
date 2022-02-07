@@ -37,6 +37,7 @@ const routes = [
   },
   {
     // 当有占位符的时候,需最少有一个参数,也可以加个?可传可不传,要不跳转的路径存在异常
+    // 当传递的params存在空串的时候,需要使用'' || undefinded 解决,否则路径会出现问题
     path: '/detail/:skuId?',
     name: 'Detail',
     component: () => import(/* webpackChunkName: "detail" */ '../views/Detail')
