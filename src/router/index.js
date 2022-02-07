@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 引入store
 import store from '@/store'
+// 引入路由信息
+import routes from './routes'
 Vue.use(VueRouter)
 // 需要重写VueRouter.prototype原型对象身上的push|replace方法
 // 先把VueRouter.prototype身上的push|replace方法进行保存一份
@@ -40,47 +42,12 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
   }
 }
 
-const routes = [
-  {
-    path: '/',
-    redirect: '/home'
-  },
-  {
-    path: '/home',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "home" */ '../views/Home')
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () =>
-      import(/* webpackChunkName: "login&register" */ '../views/Register'),
-    meta: {
-      isHideFooter: true
-    }
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () =>
-      import(/* webpackChunkName: "login&register" */ '../views/Login'),
-    meta: {
-      isHideFooter: true
-    }
-  },
-  {
-    // 当有占位符的时候,需最少有一个参数,也可以加个?可传可不传,要不跳转的路径存在异常
-    path: '/search/:keyword?',
-    name: 'Search',
-    component: () => import(/* webpackChunkName: "search" */ '../views/Search')
-  }
-]
-
 const router = new VueRouter({
-  routes
+  routes,
+  // 路由滚动行为
+  scrollBehavior (to, from, savedPosition) {
+    return { y: 0 }
+  }
 })
 // 路由全局前置守卫
 router.beforeEach(async (to, from, next) => {

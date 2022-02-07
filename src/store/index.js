@@ -7,6 +7,8 @@ import home from './home'
 import user from './user'
 // 导入search的store
 import search from './search'
+// 导入detail的store
+import detail from './detail'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -16,6 +18,7 @@ export default new Vuex.Store({
   modules: {
     home,
     user,
-    search
+    search,
+    detail
   }
 })
