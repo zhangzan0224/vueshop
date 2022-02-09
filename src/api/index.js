@@ -119,3 +119,15 @@ export const reqUpdateCheckedById = (skuID, isChecked) =>
     url: `/cart/checkCart/${skuID}/${isChecked}`,
     method: 'get'
   })
+// 获取用户地址信息 /api/user/userAddress/auth/findUserAddressList
+export const reqFindUserAddressList = () =>
+  requests({
+    url: '/user/userAddress/auth/findUserAddressList'
+  })
+// 10. 获取订单交易页信息 /api/order/auth/trade
+
+export const reqOrderInfo = () =>
+  requests({
+    url: '/order/auth/trade',
+    method: 'get'
+  })

@@ -55,6 +55,12 @@ const routes = [
     name: 'ShopCart',
     component: () =>
       import(/* webpackChunkName: "addcartsuccess" */ '../views/ShopCart')
+  },
+  // 结算界面
+  {
+    path: '/trade',
+    name: 'Trade',
+    component: () => import(/* webpackChunkName: "trade" */ '../views/Trade')
   }
 ]
 
