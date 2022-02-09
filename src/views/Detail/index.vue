@@ -116,6 +116,7 @@
                 </a>
               </div>
               <div class="add">
+                <!-- 以前路由跳转,都是从a跳到b,这里在加入购物车进行路由跳转之前,需要发送请求,把购买的产品的信息通过请求的形式通知服务器,服务器需要存储数据 -->
                 <a @click="addShopCart">加入购物车</a>
               </div>
             </div>
@@ -388,11 +389,24 @@ export default {
       }
     },
     // 加入购物车
-    addShopCart () {
-      this.$store.dispatch('addOrUpdateShopCart', {
-        skuId: this.$route.params.skuId,
-        skuNum: this.skuNum
-      })
+    async addShopCart () {
+      // 先派发action , 将产品加入到数据库,
+      // 可能成功,可能失败 ; 成功路由跳转,失败,给用户提示
+      try {
+        await this.$store.dispatch('addOrUpdateShopCart', {
+          skuId: this.$route.params.skuId,
+          skuNum: this.skuNum
+        })
+        // 将信息存储到sessionStorage
+        sessionStorage.setItem('skuInfo', JSON.stringify(this.skuInfo))
+        // 将产品信息需要传递给下一组件
+        this.$router.push({
+          name: 'AddCartSuccess',
+          query: { skuNum: this.skuNum }
+        })
+      } catch (error) {
+        alert(error)
+      }
     }
   },
   mounted () {

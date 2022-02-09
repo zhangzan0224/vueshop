@@ -9,6 +9,9 @@ import user from './user'
 import search from './search'
 // 导入detail的store
 import detail from './detail'
+// 导入shopcart的store
+import shopcart from './shopcart'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -19,6 +22,7 @@ export default new Vuex.Store({
     home,
     user,
     search,
-    detail
+    detail,
+    shopcart
   }
 })

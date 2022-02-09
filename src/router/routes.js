@@ -41,6 +41,20 @@ const routes = [
     path: '/detail/:skuId?',
     name: 'Detail',
     component: () => import(/* webpackChunkName: "detail" */ '../views/Detail')
+  },
+  // 引入添加购物车成功的路由
+  {
+    path: '/addcartsuccess',
+    name: 'AddCartSuccess',
+    component: () =>
+      import(/* webpackChunkName: "addcartsuccess" */ '../views/AddCartSuccess')
+  },
+  // 购物车
+  {
+    path: '/shopcart',
+    name: 'ShopCart',
+    component: () =>
+      import(/* webpackChunkName: "addcartsuccess" */ '../views/ShopCart')
   }
 ]
 

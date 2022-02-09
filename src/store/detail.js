@@ -2,11 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 // 导入api获取数据
 import { reqGetDetail, reqAddOrUpdateShopCart } from '@/api'
+// 导入工具的uuid
+import { getUUID } from '@/utils/uuid_token'
 
 Vue.use(Vuex)
 
 const state = {
-  detailInfo: {}
+  detailInfo: {},
+  // 游客信息
+  uuid_token: getUUID()
 }
 const mutations = {
   GET_DETAIL_BY_SKU_ID (state, detailInfo) {
@@ -27,7 +31,12 @@ const actions = {
       skuId,
       skuNum
     })
-    console.log(addOrUpdateShopCartRes)
+    // console.log(addOrUpdateShopCartRes)
+    if (addOrUpdateShopCartRes.code === 200) {
+      return 'ok'
+    } else {
+      return Promise.reject(new Error('faile'))
+    }
   }
 }
 // 简化数据而生

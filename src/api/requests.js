@@ -20,6 +20,10 @@ const requests = axios.create({
 // axios设置请求拦截器,设置响应头token
 requests.interceptors.request.use(
   (config) => {
+    // 请求头添加uuid_token
+    if (store.state.detail.uuid_token) {
+      config.headers.userTempId = store.state.detail.uuid_token
+    }
     // 判断需要携带token带给服务器
     if (store.state.user.token) {
       config.headers.token = store.state.user.token

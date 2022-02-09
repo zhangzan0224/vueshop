@@ -100,3 +100,22 @@ export const reqAddOrUpdateShopCart = ({ skuId, skuNum }) =>
     url: `/cart/addToCart/${skuId}/${skuNum}`,
     method: 'post'
   })
+// 6. 获取购物车列表 /api/cart/cartList
+export const reqGetCartList = () =>
+  requests({
+    url: '/cart/cartList',
+    methond: 'get'
+  })
+// 9. 删除购物车商品 /api/cart/deleteCart/{skuId}
+export const reqDeleteCart = (skuId) =>
+  requests({
+    url: `/cart/deleteCart/${skuId}`,
+    method: 'delete'
+  })
+
+// 8. 切换商品选中状态 /api/cart/checkCart/{skuID}/{isChecked}
+export const reqUpdateCheckedById = (skuID, isChecked) =>
+  requests({
+    url: `/cart/checkCart/${skuID}/${isChecked}`,
+    method: 'get'
+  })
