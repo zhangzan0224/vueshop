@@ -34,38 +34,24 @@
       </div>
       <div class="detail">
         <h5>商品清单</h5>
-        <ul class="list clearFix">
+        <ul
+          class="list clearFix"
+          v-for="detail in detailArrayList"
+          :key="detail.skuID"
+        >
           <li>
-            <img src="./images/goods.png" alt="" />
+            <img :src="detail.imgUrl" alt="" style="width:100px;height 100px" />
           </li>
           <li>
             <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色
-              移动联通电信4G手机硅胶透明防摔软壳 本色系列
+              {{ detail.skuName }}
             </p>
             <h4>7天无理由退货</h4>
           </li>
           <li>
-            <h3>￥5399.00</h3>
+            <h3>￥{{ detail.orderPrice }}</h3>
           </li>
-          <li>X1</li>
-          <li>有货</li>
-        </ul>
-        <ul class="list clearFix">
-          <li>
-            <img src="./images/goods.png" alt="" />
-          </li>
-          <li>
-            <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色
-              移动联通电信4G手机硅胶透明防摔软壳 本色系列
-            </p>
-            <h4>7天无理由退货</h4>
-          </li>
-          <li>
-            <h3>￥5399.00</h3>
-          </li>
-          <li>X1</li>
+          <li>X{{ detail.skuNum }}</li>
           <li>有货</li>
         </ul>
       </div>
@@ -73,6 +59,7 @@
         <h5>买家留言：</h5>
         <textarea
           placeholder="建议留言前先与商家沟通确认"
+          v-model="message"
           class="remarks-cont"
         ></textarea>
       </div>
@@ -86,8 +73,11 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>1</i>件商品，总商品金额</b>
-          <span>¥5399.00</span>
+          <b
+            ><i>{{ orderInfo.totalNum }}</i
+            >件商品，总商品金额
+          </b>
+          <span>¥{{ orderInfo.totalAmount }}</span>
         </li>
         <li>
           <b>返现：</b>
@@ -100,7 +90,9 @@
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:&nbsp;<span>¥5399.00</span></div>
+      <div class="price">
+        应付金额:&nbsp;<span>¥{{ orderInfo.totalAmount }}</span>
+      </div>
       <div class="receiveInfo">
         寄送至:
         <span>{{ userDefaultAddress.fullAddress }}</span>
@@ -109,15 +101,24 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <!-- <router-link class="subBtn" to="/pay">提交订单</router-link> -->
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Trade',
+  data () {
+    return {
+      // 收集买家留言信息
+      message: '',
+      // 订单编号
+      orderNo: ''
+    }
+  },
   methods: {
     // 修改默认地址
     changeDefaultAddress (address, addressList) {
@@ -125,6 +126,28 @@ export default {
         element.isDefault = '0'
       })
       address.isDefault = '1'
+    },
+    // 提交订单
+    async submitOrder () {
+      const { tradeNo } = this.orderInfo
+      const data = {
+        consignee: this.userDefaultAddress.consignee,
+        consigneeTel: this.userDefaultAddress.phoneNum,
+        deliveryAddress: this.userDefaultAddress.fullAddress,
+        paymentWay: 'ONLINE',
+        orderComment: this.message,
+        orderDetailList: this.detailArrayList
+      }
+
+      const result = await this.$API.reqSubmitOrder(tradeNo, data)
+      console.log(result)
+      if (result.code === 200) {
+        this.orderId = result.data
+        // 路由跳转
+        this.$router.push(`/pay?orderId=${this.orderId}`)
+      } else {
+        alert(result.message)
+      }
     }
   },
   computed: {
@@ -132,11 +155,14 @@ export default {
     // 任何data中数据变化立即重新计算
     // 计算属性会缓存
     ...mapState({
-      addressList: (state) => state.trade.addressList
+      addressList: (state) => state.trade.addressList,
+      orderInfo: (state) => state.trade.orderInfo
     }),
+    // 购物车的信息
+    ...mapGetters(['detailArrayList']),
     // 将来提交订单默认的地址
     userDefaultAddress () {
-      return this.addressList.find((item) => item.isDefault == '1')
+      return this.addressList.find((item) => item.isDefault == '1') || {}
     }
   },
   mounted () {

@@ -61,6 +61,42 @@ const routes = [
     path: '/trade',
     name: 'Trade',
     component: () => import(/* webpackChunkName: "trade" */ '../views/Trade')
+  },
+  // 支付界面
+  {
+    path: '/pay',
+    name: 'Pay',
+    component: () => import(/* webpackChunkName: "pay" */ '../views/Pay')
+  },
+  // 支付成功界面
+  {
+    path: '/paysuccess',
+    name: 'PaySuccess',
+    component: () => import(/* webpackChunkName: "pay" */ '../views/PaySuccess')
+  },
+  // 个人中心
+  {
+    path: '/center',
+    name: 'Center',
+    component: () => import(/* webpackChunkName: "pay" */ '../views/Center'),
+    redirect: (to) => {
+      // 方法接收目标路由作为参数
+      // return 重定向的字符串路径/路径对象
+      return { name: 'MyOrder', params: { pageNo: 1 } }
+    },
+    children: [
+      {
+        path: 'myorder/:pageNo?',
+        name: 'MyOrder',
+        component: () =>
+          import(/* webpackChunkName: "center" */ '../views/Center/MyOrder')
+      },
+      {
+        path: 'grouporder',
+        component: () =>
+          import(/* webpackChunkName: "center" */ '../views/Center/GroupOrder')
+      }
+    ]
   }
 ]
 

@@ -31,7 +31,12 @@ const actions = {
   }
 }
 // 简化数据而生
-const getters = {}
+const getters = {
+  // 购物的详情信息
+  detailArrayList (state) {
+    return state.orderInfo.detailArrayList
+  }
+}
 
 export default {
   state,

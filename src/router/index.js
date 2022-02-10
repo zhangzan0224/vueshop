@@ -43,6 +43,7 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 }
 
 const router = new VueRouter({
+  mode: 'history',
   routes,
   // 路由滚动行为
   scrollBehavior (to, from, savedPosition) {
