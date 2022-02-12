@@ -135,7 +135,8 @@ export default {
   mounted () {
     // 当组件挂载完毕，让show属性变为false
     // 如果不是Home路由组件，将typeNav进行隐藏
-    if (this.$route.path !== '/home') {
+    if (this.$route.path != '/home') {
+      console.log('111')
       this.isShow = false
     }
   }

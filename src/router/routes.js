@@ -1,11 +1,12 @@
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/home',
+    component: () => import(/* webpackChunkName: "home" */ '../views/Home')
   },
   {
     path: '/home',
-    name: 'About',
+    name: 'Home',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -60,13 +61,40 @@ const routes = [
   {
     path: '/trade',
     name: 'Trade',
-    component: () => import(/* webpackChunkName: "trade" */ '../views/Trade')
+    component: () => import(/* webpackChunkName: "trade" */ '../views/Trade'),
+
+    beforeEnter: (to, from, next) => {
+      //  !路由独享守卫,如果从购物车界面过来的,可以放行,不能直接进来
+      if (from.path === '/shopcart') {
+        next()
+      } else {
+        if (from.path === '/') {
+          console.log('if')
+          next('/home')
+        } else {
+          // console.log('else')
+          if (from.query.redirect) {
+            next(from.query)
+          }
+          next(false) // 从哪里来回哪里去
+        }
+      }
+    }
   },
   // 支付界面
   {
     path: '/pay',
     name: 'Pay',
-    component: () => import(/* webpackChunkName: "pay" */ '../views/Pay')
+    component: () => import(/* webpackChunkName: "pay" */ '../views/Pay'),
+    /* 只能从交易界面, 才能跳转到支付界面 */
+    beforeEnter (to, from, next) {
+      if (from.path === '/trade') {
+        next()
+      } else {
+        // console.log('pay退回来的')
+        next('/trade') // 退到trade,如果从/来的退到/home
+      }
+    }
   },
   // 支付成功界面
   {

@@ -15,6 +15,14 @@ import Pagination from '@/components/Pagination'
 import '@/mock/mockServer'
 // 引入swiper 的css样式,在全局引用,因为很多模块使用
 import 'swiper/css/swiper.css'
+// 导入图片懒加载插件
+import loadingImg from '@/assets/1.gif'
+import VueLazyload from 'vue-lazyload'
+// 引用表单验证插件
+import '@/plugins/validate'
+Vue.use(VueLazyload, {
+  loading: loadingImg
+})
 // element ui 按需引入
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

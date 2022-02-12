@@ -17,18 +17,39 @@
             <form>
               <div class="input-text clearFix">
                 <span></span>
-                <input
+                <!-- <input
                   type="text"
                   placeholder="邮箱/用户名/手机号"
                   v-model="phone"
+                /> -->
+                <input
+                  placeholder="请输入你的手机号"
+                  v-model="phone"
+                  name="phone"
+                  v-validate="{
+                    required: true,
+                    regex:
+                      /^(((13[0-9]{1})|(14[57]{1})|(15[012356789]{1})|(17[03678]{1})|(18[0-9]{1})|(19[89]{1})|(16[6]{1}))+\d{8})$/
+                  }"
+                  :class="{ invalid: errors.has('phone') }"
                 />
               </div>
               <div class="input-text clearFix">
                 <span class="pwd"></span>
-                <input
+                <!-- <input
                   type="text"
                   placeholder="请输入密码"
                   v-model="password"
+                /> -->
+                <input
+                  placeholder="请输入你的密码"
+                  v-model="password"
+                  name="password"
+                  v-validate="{
+                    required: true,
+                    regex: /^[0-9A-Za-z]{6,20}$/
+                  }"
+                  :class="{ invalid: errors.has('password') }"
                 />
               </div>
               <div class="setting clearFix">
@@ -88,25 +109,23 @@ export default {
   },
   methods: {
     // 用户登录
-    async userLogin () {
-      const { phone, password } = this
-      try {
-        // 简单进行判断
-        if (phone && password) {
+    userLogin () {
+      this.$validator.validateAll().then(async () => {
+        try {
           const result = await this.$store.dispatch('userLogin', {
-            phone,
-            password
+            phone: this.phone,
+            password: this.password
           })
-          // console.log('@@', result)
-          if (result === 'ok') {
-            this.$router.push('/home')
+          console.log(result)
+          if (result == 'ok') {
+            //! 不能直接跳到/home 有可能是从订单等页面过来的,需检查是否存在query参数,之前将信息保存在query参数中
+            var toPath = this.$route.query.redirect || '/home'
+            this.$router.push(toPath)
           } else return false
-        } else {
-          return false
+        } catch (error) {
+          alert(error.message)
         }
-      } catch (error) {
-        alert(error.message)
-      }
+      })
     }
   }
 }

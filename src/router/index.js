@@ -43,7 +43,6 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 }
 
 const router = new VueRouter({
-  mode: 'history',
   routes,
   // 路由滚动行为
   scrollBehavior (to, from, savedPosition) {
@@ -51,6 +50,7 @@ const router = new VueRouter({
   }
 })
 // 路由全局前置守卫
+
 router.beforeEach(async (to, from, next) => {
   // 如果用户登录过,有token,那就不能再去login页面了
   // 有token说明登录了
@@ -85,8 +85,24 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    // 未登录 先放行
-    next()
+    // !未登录 先放行
+    // ! 未登录不能去交易相关,支付相关,不能去个人中心
+    const toPath = to.path
+    if (
+      toPath.indexOf('/trade') != -1 ||
+      toPath.indexOf('/pay') != -1 ||
+      toPath.indexOf('/center') != -1
+    ) {
+      // 将之前要跳转的路由信息保存到query参数中去; 可以使用decodeURIComponent('%2Fcenter%2Fmyorder%2F1')解析参数
+      /**
+       * decodeURIComponent('%2Fcenter%2Fmyorder%2F1')
+       * '/center/myorder/1',
+       * 然后在跳转的时候进行判断,是否有query参数,如果存在,别跳到query
+       */
+      next('/login?redirect=' + toPath)
+    } else {
+      next()
+    }
   }
 })
 export default router
