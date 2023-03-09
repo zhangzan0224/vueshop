@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style type="text/css">
+      body * {
+        -webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
+        -o-filter: grayscale(100%);
+        filter: grayscale(100%);
+        filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+        filter: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" />
+    <div style="color: red">adasdasdas dasd as</div>
+    <script>
+      // let i = document.getElementsByTagName('input')[0]
+      // i.onkeyup = function (e) {
+      //   console.log(e)
+      // }
+      function findMaxString(str) {
+        var objStr = {}
+        var arrArray = str.split('')
+        //先构建一个对象 key 是元素,值为对象
+        for (let i = 0; i < arrArray.length; i++) {
+          if (objStr[arrArray[i]]) {
+            objStr[arrArray[i]]++
+          } else {
+            objStr[arrArray[i]] = 1
+          }
+        }
+        // 通过比较找出最大的
+        var maxLetter = ''
+        var levelNum = 0
+        for (const k in objStr) {
+          if (objStr[k] > levelNum) {
+            levelNum = objStr[k]
+            maxLetter = k
+          }
+        }
+
+        // console.log(maxLetter + ':' + levelNum)
+
+        return maxLetter
+      }
+      var testStr = 'aaaccdeddedasdsadsrf'
+      console.log(findMaxString(testStr))
+
+      /*       // 生成指定长度的字符串
+      function randomStr(l = 4) {
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYXabcdefghijklmnopqrstuvwxyz1234567890'
+        const maxNum = chars.length
+        let str = ''
+        for (let i = 0; i < l; i++) {
+          str += chars.charAt(Math.floor(Math.random() * maxNum))
+        }
+        return new Date.now() + str
+      } */
+      let a = 1
+      let b = 2
+      ;[a, b] = [b, a]
+      console.log(a)
+      console.log(b)
+      function splitByCount(str, n) {
+        if (n < str.length) {
+          var res = ''
+          for (var i = 0; i < str.length; i += n) {
+            if (i + n > str.length) {
+              res += str.substring(i)
+            } else {
+              res += str.substring(i, n) + ','
+            }
+          }
+          return res
+        }
+        // 先判断要截取的长度,截取长度过大直接返回字符串
+        return str1
+      }
+      console.log(splitByCount('4168468468485', 8)) //41684684,68485
+    </script>
+  </body>
+</html>

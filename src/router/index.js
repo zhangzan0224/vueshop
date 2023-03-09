@@ -14,6 +14,7 @@ VueRouter.prototype.push = function (location, resolve, reject) {
   // 第一个形参：路由跳转的配置对象（query|params））
   // 第二个参数：undefined|箭头函数（成功的回调）
   // 第三个参数:undefined|箭头函数（失败的回调）
+  console.log(this)
   if (resolve && reject) {
     // push方法传递第二个参数|第三个参数（箭头函数）
     // originPush：利用call修改上下文，变为(路由组件.$router)这个对象，第二参数：配置对象、第三、第四个参数：成功和失败回调函数
@@ -88,6 +89,9 @@ router.beforeEach(async (to, from, next) => {
     // !未登录 先放行
     // ! 未登录不能去交易相关,支付相关,不能去个人中心
     const toPath = to.path
+    if (toPath === '/test') {
+      next()
+    }
     if (
       toPath.indexOf('/trade') != -1 ||
       toPath.indexOf('/pay') != -1 ||

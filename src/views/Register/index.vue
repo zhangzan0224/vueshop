@@ -123,6 +123,9 @@ export default {
       agree: true
     }
   },
+  mounted () {
+    console.log(this.$store)
+  },
   methods: {
     // 获取验证码
     async getCode () {

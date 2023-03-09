@@ -78,7 +78,7 @@
 <script>
 import { mapState } from 'vuex'
 // 引入lodash:是把lodash全部封装好的函数全都引入进来了
-// 按需引入：只是引入节流函数，其他的函数没有引入（模块），这样做的好处是，当你打包项目的时候体积会小一些
+// 按需引入：只是引入函数，其他的函数没有引入（模块），这样做的好处是，当你打包项目的时候体积会小一些
 import throttle from 'lodash/throttle'
 export default {
   name: 'TypeNav',
